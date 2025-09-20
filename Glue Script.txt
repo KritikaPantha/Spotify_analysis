@@ -26,13 +26,13 @@ albums_df = spark.read.option("header","true").csv("input_path1")
 artists_df = spark.read.option("header","true").csv("input_path2")
 track_df = spark.read.option("header","true").csv("input_path3")
 
-# Join albums with artists on artist_id = id
+# Join albums with artists 
 albums_artists_df = albums_df.join(
     artists_df,
     albums_df["artist_id"] == artists_df["id"],"inner"
 )
 
-# Join the result with tracks on album_id = album_id
+# Join the result with tracks 
 joined_df = albums_artists_df.join(
     track_df,
     albums_artists_df["track_id"] == track_df["track_id"], "inner"
@@ -45,4 +45,5 @@ final_df = joined_df.select(artists_df["id"], track_df["track_id"])
 final_df.write.mode("overwrite").option("header", "true").option("compression", "snappy").csv(output_path)
 
 # Commit the job
+
 job.commit()
